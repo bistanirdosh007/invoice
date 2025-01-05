@@ -5,37 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Excel and Send PDFs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Upload Excel and Send PDFs</h1>
-        <form id="uploadForm" method="post" enctype="multipart/form-data" action="{% url 'process_excel' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="excelFile" class="form-label">Upload Excel File:</label>
-                <input type="file" class="form-control" id="excelFile" name="excelFile" required>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="form-container">
+                    <h1 class="text-center mb-4">Upload Excel and Send PDFs</h1>
+                    <form id="uploadForm" method="post" enctype="multipart/form-data" action="{% url 'process_excel' %}">
+                        {% csrf_token %}
+                        
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="excelFile" class="form-label">Upload Excel File:</label>
+                            <input type="file" class="form-control" id="excelFile" name="excelFile" required>
+                        </div>
+                        
+                        <!-- Recipient Type -->
+                        <div class="mb-3">
+                            <label for="recipientType" class="form-label">Select Recipient Type:</label>
+                            <select class="form-select" id="recipientType" name="recipientType" required>
+                                <option value="" disabled selected>Choose a recipient type</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="customer">Customer</option>
+                                <option value="supplier">Supplier</option>
+                                <option value="manager">Manager</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Email Address -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Recipient Email Address:</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com" required>
+                        </div>
+                        
+                        <!-- Directory for Saving PDFs -->
+                        <div class="mb-3">
+                            <label for="saveDirectory" class="form-label">Specify Save Directory (Optional):</label>
+                            <input type="text" class="form-control" id="saveDirectory" name="saveDirectory" placeholder="Leave empty for default save location">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Upload and Send PDFs</button>
+                    </form>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label for="recipientType" class="form-label">Select Recipient Type:</label>
-                <select class="form-select" id="recipientType" name="recipientType" required>
-                    <option value="" disabled selected>Choose a recipient type</option>
-                    <option value="warehouse">Warehouse</option>
-                    <option value="customer">Customer</option>
-                    <option value="supplier">Supplier</option>
-                    <option value="manager">Manager</option>
-                </select>
-            </div>
-            
-            <div class="mb-3">
-                <label for="email" class="form-label">Recipient Email Address:</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Upload and Send PDFs</button>
-        </form>
+        </div>
     </div>
 
+    <script>
+        // Dynamically change email placeholder based on recipient type
+        const recipientType = document.getElementById('recipientType');
+        const emailField = document.getElementById('email');
+
+        recipientType.addEventListener('change', function () {
+            const type = this.value;
+            switch (type) {
+                case 'warehouse':
+                    emailField.placeholder = 'warehouse@example.com';
+                    break;
+                case 'customer':
+                    emailField.placeholder = 'customer@example.com';
+                    break;
+                case 'supplier':
+                    emailField.placeholder = 'supplier@example.com';
+                    break;
+                case 'manager':
+                    emailField.placeholder = 'manager@example.com';
+                    break;
+                default:
+                    emailField.placeholder = 'example@example.com';
+            }
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

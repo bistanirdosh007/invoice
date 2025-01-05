@@ -28,10 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'invoice_by_pdf',
     'track_delivery',
     'invoicing',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
