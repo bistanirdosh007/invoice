@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Invoice</title>
+    <link rel="stylesheet" href="{% static 'invoice_by_pdf/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Invoice Excel File</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload</button>
+        </form>
+        {% if messages %}
+            <div class="message-container">
+                {% for message in messages %}
+                    <div class="message-success">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
