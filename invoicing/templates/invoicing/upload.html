@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Excel and Send PDFs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Upload Excel and Send PDFs</h1>
+        <form id="uploadForm" method="post" enctype="multipart/form-data" action="{% url 'process_excel' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="excelFile" class="form-label">Upload Excel File:</label>
+                <input type="file" class="form-control" id="excelFile" name="excelFile" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="recipientType" class="form-label">Select Recipient Type:</label>
+                <select class="form-select" id="recipientType" name="recipientType" required>
+                    <option value="" disabled selected>Choose a recipient type</option>
+                    <option value="warehouse">Warehouse</option>
+                    <option value="customer">Customer</option>
+                    <option value="supplier">Supplier</option>
+                    <option value="manager">Manager</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Recipient Email Address:</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Upload and Send PDFs</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'invoice_by_pdf',
     'track_delivery',
+    'invoicing',
     'whitenoise.runserver_nostatic',
 ]
 

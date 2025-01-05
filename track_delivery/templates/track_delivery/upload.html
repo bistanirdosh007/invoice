@@ -127,16 +127,16 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Tracking Number</th>
                         <th>Freight Forwarder</th>
+                        <th>Tracking Number</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for row in updated_rows %}
                         <tr>
-                            <td>{{ row.Tracking_Number }}</td>
                             <td>{{ row.Freight_Forwarder }}</td>
+                            <td>{{ row.Tracking_Number }}</td>
                             <td>{{ row.Status }}</td>
                         </tr>
                     {% endfor %}
