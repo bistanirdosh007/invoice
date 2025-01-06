@@ -38,7 +38,7 @@
             <div class="col-lg-6 col-md-8">
                 <div class="form-container">
                     <h1 class="text-center mb-4">Upload Excel and Send PDFs</h1>
-                    <form id="uploadForm" method="post" enctype="multipart/form-data" action="{% url 'process_excel' %}">
+                    <form id="uploadForm" method="post" enctype="multipart/form-data" action="{% url 'invoicing:process_excel' %}">
                         {% csrf_token %}
                         
                         <!-- File Upload -->
