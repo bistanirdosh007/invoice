@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <h1>Welcome</h1>
+
+        <div class="mt-4">
+            <a href="{% url 'invoicing:render_upload_excel' %}" class="btn btn-primary btn-lg">Invoicing App</a>
+        </div>
+        <div class="mt-3">
+            <a href="{% url 'track_delivery:track_deliveries' %}" class="btn btn-secondary btn-lg">Track Delivery App</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
