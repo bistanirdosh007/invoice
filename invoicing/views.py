@@ -3,24 +3,18 @@ import pandas as pd
 from django.core.files.storage import default_storage
 from django.core.mail import EmailMessage
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import yagmail
 from decouple import config
 import xlwings as xw
+from django.contrib import messages
 from .models import EmailLog
 
 def render_upload_excel(request):
-    """
-    Renders the HTML upload page for the user.
-    """
     return render(request, 'invoicing/upload.html')
 
 
 def save_uploaded_file(file):
-    """
-    Saves the uploaded file to a temporary location.
-    Returns the full file path of the saved file.
-    """
     file_name = default_storage.save(file.name, file)
     absolute_path = default_storage.path(file_name)
     file.close()
@@ -28,9 +22,6 @@ def save_uploaded_file(file):
 
 
 def extract_po_number(excel_file):
-    """
-    Extracts the PO Number from the sheet of the Excel file.
-    """
     try:
         first_sheet = excel_file.parse('Sheet1')
         return first_sheet.iloc[1]['PO Number']
@@ -41,10 +32,6 @@ def extract_po_number(excel_file):
 
 
 def convert_sheets_to_pdfs(excel_file_path, po_number, output_dir):
-    """
-    Converts specified sheets (Statement, SheetB, and SheetC) of the Excel file into PDFs.
-    Saves the PDFs in the specified output directory and returns a list of generated PDF file paths.
-    """
     target_sheets = ['Statement', 'SheetB', 'SheetC']
     pdf_files = []
 
@@ -56,7 +43,6 @@ def convert_sheets_to_pdfs(excel_file_path, po_number, output_dir):
     with xw.App(visible=False) as app:  # Excel will not be visible during the process
         try:
             wb = app.books.open(excel_file_path)
-            print(f"Opened Excel file: {excel_file_path}")
         except Exception as e:
             print(f"Error opening Excel file: {e}")
             return []
@@ -65,21 +51,17 @@ def convert_sheets_to_pdfs(excel_file_path, po_number, output_dir):
         for sheet_name in target_sheets:
             if sheet_name in [sheet.name for sheet in wb.sheets]:  # Match sheet names exactly
                 sheet = wb.sheets[sheet_name]
-                print(f"Processing sheet: {sheet_name}")
 
                 # Generate the PDF file path in the same directory as the uploaded file
                 pdf_file_name = f"{sheet_name}_PO_{po_number}.pdf"
                 pdf_file_path = os.path.join(output_dir, pdf_file_name)
-                print(f"Generated PDF path: {pdf_file_path}")
                 pdf_files.append(pdf_file_path)
 
                 # Check if sheet has any content
                 if sheet.used_range.count > 0:
                     try:
                         # Convert the sheet to PDF
-                        print(f"Converting sheet {sheet_name} to PDF...")
                         sheet.api.ExportAsFixedFormat(0, pdf_file_path)
-                        print(f"PDF saved: {pdf_file_path}")
                     except Exception as e:
                         print(f"Error converting sheet {sheet_name} to PDF: {e}")
                         continue
@@ -90,15 +72,10 @@ def convert_sheets_to_pdfs(excel_file_path, po_number, output_dir):
 
         # Close the workbook
         wb.close()
-        print(f"Closed Excel file: {excel_file_path}")
-
     return pdf_files
 
 
 def send_email_with_attachments(email_address, pdf_files, po_number):
-    """
-    Sends an email with the generated PDFs as attachments.
-    """
     try:
         # Retrieve email credentials from environment variables using decouple
         email_user = config('EMAIL_USER')
@@ -119,9 +96,6 @@ def send_email_with_attachments(email_address, pdf_files, po_number):
 
 
 def process_excel(request):
-    """
-    Main function to handle the uploaded Excel file and ask where to save the PDFs.
-    """
     if request.method == 'POST' and request.FILES.get('excelFile'):
         uploaded_file = request.FILES['excelFile']
         
@@ -131,10 +105,6 @@ def process_excel(request):
         # If save directory is not provided, use the uploaded file's temporary directory
         if not save_directory:
             save_directory = os.path.dirname(uploaded_file.name)
-        
-        # Print the selected directory for debugging
-        print(f"Save directory: {save_directory}")
-
         try:
             # Step 1: Save the uploaded file temporarily (get the file path)
             full_file_path = save_uploaded_file(uploaded_file)
@@ -161,14 +131,15 @@ def process_excel(request):
                     pdf_file_paths=",".join(pdf_files),
                 )
 
-            # Step 7: Return success response
-            return JsonResponse({'message': 'PDFs created and email sent successfully', 'pdf_files': pdf_files})
+                messages.success(request, "PDFs created and email sent successfully!")
+
+            return redirect(render_upload_excel)
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
         finally:
-            # Step 8: Clean up the uploaded Excel file
+            # Step 7: Clean up the uploaded Excel file
             if os.path.exists(full_file_path):
                 try:
                     os.remove(full_file_path)

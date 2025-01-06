@@ -4,146 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freight Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f8f9fa;
         }
-
-        .container {
-            background-color: #ffffff;
-            padding: 20px 40px;
-            border-radius: 8px;
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 600px;
         }
-
-        h1 {
-            color: #333333;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        input[type="file"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        button {
+        .btn-primary {
             background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            border-color: #007bff;
         }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .message {
-            margin: 15px 0;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
         table {
-            width: 100%;
             margin-top: 20px;
             border-collapse: collapse;
+            width: 100%;
         }
-
         table, th, td {
             border: 1px solid #ddd;
         }
-
+        th {
+            background-color: #f2f2f2;
+        }
         th, td {
             padding: 10px;
             text-align: left;
         }
-
-        th {
-            background-color: #f2f2f2;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Upload Freight Tracking Excel File</h1>
-
-        <!-- Display messages -->
+    <div class="container mt-5">
+        <!-- Display Django success/error messages -->
         {% if messages %}
-            <div class="message {% if messages.tags %}{{ messages.tags }}{% endif %}">
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                {{ message }}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
-        <!-- File upload form -->
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file" name="file" accept=".xlsx" required>
-            <button type="submit">Upload and Process</button>
-        </form>
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="form-container">
+                    <h1 class="text-center mb-4">Upload Freight Tracking Excel File</h1>
+                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="fileUpload" class="form-label">Upload Excel File:</label>
+                            <input type="file" class="form-control" id="fileUpload" name="file" accept=".xlsx" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Upload and Process</button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- Display updated rows -->
         {% if updated_rows %}
-            <h2>Updated Tracking Details</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Freight Forwarder</th>
-                        <th>Tracking Number</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in updated_rows %}
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-8 col-md-10">
+                <h2 class="text-center">Updated Tracking Details</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Freight Forwarder</th>
+                            <th>Tracking Number</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in updated_rows %}
                         <tr>
                             <td>{{ row.Freight_Forwarder }}</td>
                             <td>{{ row.Tracking_Number }}</td>
                             <td>{{ row.Status }}</td>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
         {% endif %}
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

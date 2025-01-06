@@ -23,6 +23,17 @@
 </head>
 <body>
     <div class="container mt-5">
+        <!-- Display Django success/error messages -->
+        {% if messages %}
+        <div class="mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
                 <div class="form-container">
@@ -56,8 +67,14 @@
                         
                         <!-- Directory for Saving PDFs -->
                         <div class="mb-3">
-                            <label for="saveDirectory" class="form-label">Specify Save Directory (Optional):</label>
-                            <input type="text" class="form-control" id="saveDirectory" name="saveDirectory" placeholder="Leave empty for default save location">
+                            <label for="saveDirectory" class="form-label">Specify Save Directory:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="saveDirectory" 
+                                name="saveDirectory" 
+                                placeholder="Auto-filled after file upload" 
+                                >
                         </div>
                         
                         <button type="submit" class="btn btn-primary w-100">Upload and Send PDFs</button>
@@ -71,6 +88,8 @@
         // Dynamically change email placeholder based on recipient type
         const recipientType = document.getElementById('recipientType');
         const emailField = document.getElementById('email');
+        const saveDirectory = document.getElementById('saveDirectory');
+        const excelFile = document.getElementById('excelFile');
 
         recipientType.addEventListener('change', function () {
             const type = this.value;
@@ -90,6 +109,14 @@
                 default:
                     emailField.placeholder = 'example@example.com';
             }
+        });
+
+        // Auto-populate save directory field based on uploaded file
+        excelFile.addEventListener('change', function () {
+            const filePath = this.value.split('\\');
+            const fileName = filePath[filePath.length - 1];
+            const poNumber = "PO_" + new Date().getTime(); // Example logic for PO number
+            saveDirectory.value = `D:\\${poNumber}\\${fileName}`;
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
