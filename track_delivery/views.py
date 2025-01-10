@@ -40,9 +40,9 @@ def track_deliveries(request):
                         if forwarder == "ups":
                             url = f"https://www.ups.com/track?track=yes&trackNums={tracking_number}&loc=en_US&requester=ST/trackdetails"
                         elif forwarder == "fastfrate":
-                            url = f"https://www.fastfrate.com/track/{tracking_number}"  # Example URL
+                            url = f"https://apps.fastfrate.com/fastnet/FastNet.aspx?ProbillNo={tracking_number}"  
                         elif forwarder == "dayross":
-                            url = f"https://www.dayross.com/track/{tracking_number}"  # Example URL
+                            url = f"https://dayross.com/view-shipment-tracking?division=Freight&probillNumber={tracking_number}"  
                         else:
                             continue
 
